@@ -1,6 +1,0 @@
-streamlit
-tushare
-pandas
-datetime
-logging
-ta-lib
