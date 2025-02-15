@@ -5,6 +5,13 @@ import streamlit as st
 
 # 设置页面配置（必须放在所有 Streamlit 命令的最前面）
 st.set_page_config(page_title="Stock Analysis App", layout="wide")
+
+# 显示标题和银河系图片
+st.title("恢恢数据库")
+st.image("/mnt/data/A_stunning_view_of_the_Milky_Way_galaxy_with_milli.png", use_column_width=True)
+
+# 你的其他代码逻辑在这里...
+
 # 设置 Pandas 显示选项，确保 '接受机构' 列完全显示
 pd.set_option('display.max_colwidth', None)
 
