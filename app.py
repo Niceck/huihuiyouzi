@@ -2,13 +2,14 @@ import tushare as ts
 import pandas as pd
 import os
 import streamlit as st
+
 # 设置页面配置（必须放在所有 Streamlit 命令的最前面）
 st.set_page_config(page_title="Stock Analysis App", layout="wide")
 # 设置 Pandas 显示选项，确保 '接受机构' 列完全显示
 pd.set_option('display.max_colwidth', None)
 
-# 从 secrets.toml 文件中读取 Tushare API Token
-tushare_token = st.secrets["api_keys"]["tushare_token"]
+# 从 secrets.toml 文件中读取 Tushare API Token，使用默认值避免 KeyError
+tushare_token = st.secrets.get("api_keys", {}).get("tushare_token", "your_default_token_here")
 
 # 设置 Tushare API Token
 ts.set_token(tushare_token)
@@ -36,7 +37,7 @@ def main():
     hm_name = st.sidebar.text_input("游资名称", "")
     start_date = st.sidebar.text_input("开始日期", "")
     end_date = st.sidebar.text_input("结束日期", "")
-    limit = st.sidebar.number_input("查询的最大数据条数", min_value=1, value=100)  # 用户输入 limit
+    limit = st.sidebar.number_input("查询的最大数据条数", min_value=1, value=20)  # 用户输入 limit
 
     # 查询按钮
     if st.sidebar.button('查询数据'):
@@ -66,20 +67,6 @@ def main():
             # 显示数据表格
             st.write("### 游资数据")
             st.dataframe(df, use_container_width=True, hide_index=True)
-
-            # 将结果保存到文件
-            desktop_path = os.path.join(os.path.expanduser("~"), "Desktop", "游资数据.txt")
-            try:
-                with open(desktop_path, 'w', encoding='utf-8') as f:
-                    # 写入表头
-                    f.write("\t".join(df.columns) + "\n")
-                    # 写入数据
-                    for index, row in df.iterrows():
-                        f.write("\t".join(str(val) for val in row) + "\n")
-
-                st.success(f"数据已保存到桌面，文件路径：{desktop_path}")
-            except Exception as e:
-                st.error(f"保存文件时发生错误：{e}")
 
 # 确保脚本以 main() 函数执行
 if __name__ == "__main__":
