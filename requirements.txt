@@ -1,6 +1,5 @@
 streamlit
 tushare
 pandas
-ta-lib
 datetime
 logging
