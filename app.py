@@ -2,7 +2,8 @@ import tushare as ts
 import pandas as pd
 import os
 import streamlit as st
-
+# 设置页面配置（必须放在所有 Streamlit 命令的最前面）
+st.set_page_config(page_title="Stock Analysis App", layout="wide")
 # 设置 Pandas 显示选项，确保 '接受机构' 列完全显示
 pd.set_option('display.max_colwidth', None)
 
