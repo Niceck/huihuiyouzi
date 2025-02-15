@@ -10,7 +10,7 @@ st.set_page_config(page_title="Stock Analysis App", layout="wide")
 st.title("恢恢数据库")
 
 # 确保文件路径正确
-image_path = os.path.join(os.getcwd(), "A_stunning_view_of_the_Milky_Way_galaxy_with_milli.png")
+image_path = os.path.join(os.getcwd(), "yinhe.png")
 
 # 检查文件是否存在
 if os.path.exists(image_path):
