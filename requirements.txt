@@ -1,0 +1,4 @@
+streamlit
+pandas
+tushare
+numpy==1.26.4
