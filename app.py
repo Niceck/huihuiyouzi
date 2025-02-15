@@ -8,7 +8,7 @@ st.set_page_config(page_title="Stock Analysis App", layout="wide")
 
 # 显示标题和银河系图片
 st.title("恢恢数据库")
-st.image("/mnt/data/A_stunning_view_of_the_Milky_Way_galaxy_with_milli.png", use_column_width=True)
+st.image("/mnt/data/A_stunning_view_of_the_Milky_Way_galaxy_with_milli.png", use_container_width=True)
 
 # 你的其他代码逻辑在这里...
 
