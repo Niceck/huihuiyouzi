@@ -36,7 +36,7 @@ def main():
     hm_name = st.sidebar.text_input("游资名称", "")
     start_date = st.sidebar.text_input("开始日期", "")
     end_date = st.sidebar.text_input("结束日期", "")
-    limit = st.sidebar.number_input("查询的最大数据条数", min_value=1, value=20)  # 用户输入 limit
+    limit = st.sidebar.number_input("查询的最大数据条数", min_value=1, value=100)  # 用户输入 limit
 
     # 查询按钮
     if st.sidebar.button('查询数据'):
