@@ -9,12 +9,16 @@ st.set_page_config(page_title="Stock Analysis App", layout="wide")
 # 显示标题
 st.title("恢恢数据库")
 
-# 文件上传组件，允许用户上传图片
-uploaded_file = st.file_uploader("yinhe.png", type=["png", "jpg", "jpeg"])
+# 确保文件路径正确
+image_path = os.path.join(os.getcwd(), "A_stunning_view_of_the_Milky_Way_galaxy_with_milli.png")
 
-# 如果上传了文件，显示图片
-if uploaded_file is not None:
-    st.image(uploaded_file, use_container_width=True)
+# 检查文件是否存在
+if os.path.exists(image_path):
+    # 显示图片
+    st.image(image_path, use_container_width=True)
+else:
+    st.error("图片文件未找到，请检查路径。")
+
 
 # 设置 Pandas 显示选项，确保 '接受机构' 列完全显示
 pd.set_option('display.max_colwidth', None)
