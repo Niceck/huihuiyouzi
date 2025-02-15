@@ -2,22 +2,35 @@ import tushare as ts
 import pandas as pd
 import os
 import streamlit as st
+import base64
 
 # 设置页面配置
 st.set_page_config(page_title="Stock Analysis App", layout="wide")
 
+# 将本地图片转换为 base64 编码
+image_path = "yinhe.png"
+with open(image_path, "rb") as image_file:
+    encoded_image = base64.b64encode(image_file.read()).decode()
+
+# CSS 设置背景图片
+st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{encoded_image}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 100vh;
+    }}
+    </style>
+    """, unsafe_allow_html=True
+)
+
 # 显示标题
 st.title("恢恢数据库")
 
-# 确保文件路径正确
-image_path = os.path.join(os.getcwd(), "yinhe.png")
-
-# 检查文件是否存在
-if os.path.exists(image_path):
-    # 显示图片
-    st.image(image_path, use_container_width=True)
-else:
-    st.error("图片文件未找到，请检查路径。")
+# 你可以在这里继续添加其他内容，例如数据展示、图表等
 
 
 # 设置 Pandas 显示选项，确保 '接受机构' 列完全显示
