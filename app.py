@@ -31,8 +31,7 @@ def query_youzidata():
             hm_name=hm_name,
             start_date=start_date,
             end_date=end_date,
-            limit=limit,
-            offset=0,
+            limit=500,
             fields=["trade_date", "ts_code", "ts_name", "buy_amount", "sell_amount", "net_amount", "hm_name"]
         )
         if df.empty:
@@ -134,8 +133,7 @@ def query_limit_cpt_list():
                 ts_code="",
                 start_date="",
                 end_date="",
-                limit="",
-                offset="",
+                limit="500",
                 fields=[
                     "ts_code",
                     "name",
@@ -178,6 +176,7 @@ def query_ths_member():
             try:
                 df = pro.ths_member(
                     ts_code=ts_code_input,
+                    limit="500",
                     fields=[
                         "ts_code",
                         "con_code",
@@ -209,6 +208,7 @@ def query_concept_data():
                 trade_date=trade_date,
                 ts_code="",
                 name="",
+                limit="500",
                 fields=[
                     "trade_date",
                     "ts_code",
@@ -243,6 +243,7 @@ def query_concept_cons():
                 ts_code=ts_code_input,
                 trade_date=trade_date,
                 con_code="",
+                limit="500",
                 fields=[
                     "ts_code",
                     "name",
@@ -283,6 +284,7 @@ def query_limit_step():
                 start_date="",
                 end_date="",
                 nums=nums,
+                limit="500",
                 fields=[
                     "ts_code",
                     "name",
@@ -317,6 +319,7 @@ def query_stk_surv():
                 trade_date=trade_date,
                 start_date=start_date,
                 end_date=end_date,
+                limit="500",
                 fields=[
                     "ts_code",
                     "name",
