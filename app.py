@@ -193,12 +193,90 @@ def query_ths_member():
             except Exception as e:
                 st.error(f"查询失败：{e}")
 
+# ================== 功能5：概念题材查询 ==================
+def query_concept_data():
+    st.subheader("概念题材查询")
+    trade_date = st.text_input("交易日期（格式：YYYYMMDD）", value="")
+    if st.button("查询概念题材数据", key="btn_concept"):
+        try:
+            df = pro.kpl_concept(
+                trade_date=trade_date,
+                ts_code="",
+                name="",
+                fields=[
+                    "trade_date",
+                    "ts_code",
+                    "name",
+                    "z_t_num",
+                    "up_num"
+                ]
+            )
+            if df.empty:
+                st.info("未查询到数据")
+            else:
+                df.rename(columns={
+                    "ts_code": "题材代码",
+                    "name": "题材名称",
+                    "trade_date": "交易日期",
+                    "z_t_num": "涨停家数",
+                    "up_num": "升温家数"
+                }, inplace=True)
+                st.dataframe(df, use_container_width=True)
+        except Exception as e:
+            st.error(f"查询失败：{e}")
+
+# ================== 功能6：题材成分股查询 ==================
+def query_concept_cons():
+    st.subheader("题材成分股查询")
+    ts_code_input = st.text_input("题材代码", key="ths_input_concept")
+    trade_date = st.text_input("交易日期（格式：YYYYMMDD）", value="")
+    if st.button("查询题材成分股数据", key="btn_concept_cons"):
+        try:
+            df = pro.kpl_concept_cons(
+                ts_code=ts_code_input,
+                trade_date=trade_date,
+                con_code="",
+                fields=[
+                    "ts_code",
+                    "name",
+                    "con_name",
+                    "con_code",
+                    "trade_date",
+                    "desc",
+                    "hot_num"
+                ]
+            )
+            if df.empty:
+                st.info("未查询到数据")
+            else:
+                df.rename(columns={
+                    "ts_code": "题材代码",
+                    "name": "题材名称",
+                    "con_name": "成分股名称",
+                    "con_code": "成分股代码",
+                    "trade_date": "交易日期",
+                    "desc": "描述",
+                    "hot_num": "人气值"
+                }, inplace=True)
+                st.dataframe(df, use_container_width=True)
+        except Exception as e:
+            st.error(f"查询失败：{e}")
+
+
+
 
 # ================== 主函数 ==================
 def main():
-    st.title("恢恢数据库 - 综合查询")
+    st.title("柚子侦探数据库 - 综合查询")
     # 使用 st.tabs 实现上方横向选择模块
-    tabs = st.tabs(["游资数据查询", "董秘问答查询", "涨停题材列表", "题材成分股查询"])
+    tabs = st.tabs([
+        "游资数据查询",
+        "董秘问答查询",
+        "涨停题材列表",
+        "题材成分股查询",
+        "概念题材查询",  # 新增的模块
+        "题材成分股查询"  # 新增的模块
+    ])
 
     with tabs[0]:
         query_youzidata()
@@ -208,6 +286,10 @@ def main():
         query_limit_cpt_list()
     with tabs[3]:
         query_ths_member()
+    with tabs[4]:
+        query_concept_data()  # 新增的模块
+    with tabs[5]:
+        query_concept_cons()  # 新增的模块
 
 
 if __name__ == "__main__":
