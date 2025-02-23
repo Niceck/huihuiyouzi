@@ -16,13 +16,13 @@ pro = ts.pro_api()
 # ================== 功能1：游资数据查询 ==================
 def query_youzidata():
     st.subheader("游资数据查询")
-    # 输入参数
-    trade_date = st.text_input("交易日期（格式：YYYYMMDD）", value="")
-    ts_code = st.text_input("股票代码", value="")
-    hm_name = st.text_input("游资名称", value="")
-    start_date = st.text_input("开始日期（格式：YYYYMMDD）", value="")
-    end_date = st.text_input("结束日期（格式：YYYYMMDD）", value="")
-    limit = st.number_input("查询的最大数据条数", min_value=1, value=500)
+    # 输入参数（增加唯一的 key 参数）
+    trade_date = st.text_input("交易日期（格式：YYYYMMDD）", value="", key="youzi_trade_date")
+    ts_code = st.text_input("股票代码", value="", key="youzi_ts_code")
+    hm_name = st.text_input("游资名称", value="", key="youzi_hm_name")
+    start_date = st.text_input("开始日期（格式：YYYYMMDD）", value="", key="youzi_start_date")
+    end_date = st.text_input("结束日期（格式：YYYYMMDD）", value="", key="youzi_end_date")
+    limit = st.number_input("查询的最大数据条数", min_value=1, value=500, key="youzi_limit")
 
     if st.button("查询游资数据", key="btn_youzidata"):
         df = pro.hm_detail(
@@ -53,9 +53,10 @@ def query_youzidata():
             }, inplace=True)
             st.dataframe(df, use_container_width=True, hide_index=True)
 
-
-# ================== 功能2：董秘问答查询 ==================
 def get_qa_sz(ts_code, trade_date):
+    """
+    获取深圳的董秘问答数据，包含股票代码、股票名称、提问、回答和发布时间。
+    """
     try:
         df = pro.irm_qa_sz(
             ts_code=ts_code,
@@ -74,8 +75,10 @@ def get_qa_sz(ts_code, trade_date):
         st.error(f"获取深圳数据失败: {e}")
         return pd.DataFrame()
 
-
 def get_qa_sh(ts_code, trade_date):
+    """
+    获取上海的董秘问答数据，包含股票代码、股票名称、提问、回答和发布时间。
+    """
     try:
         df = pro.irm_qa_sh(
             ts_code=ts_code,
@@ -95,9 +98,11 @@ def get_qa_sh(ts_code, trade_date):
         return pd.DataFrame()
 
 
+
+# ================== 功能2：董秘问答查询 ==================
 def query_dongmi():
     st.subheader("董秘问答查询")
-    ts_code_input = st.text_input("股票代码（可留空）", value="")
+    ts_code_input = st.text_input("股票代码（可留空）", value="", key="dongmi_ts_code")
     trade_date = st.date_input("交易日期", value=dt.datetime.today().date())
     trade_date_str = trade_date.strftime("%Y%m%d") if trade_date else ""
     if st.button("查询董秘问答", key="btn_dongmi"):
@@ -120,7 +125,7 @@ def query_dongmi():
 # ================== 功能3：涨停题材列表 ==================
 def query_limit_cpt_list():
     st.subheader("涨停题材列表")
-    trade_date = st.date_input("请选择交易日期", value=dt.datetime.today())
+    trade_date = st.date_input("请选择交易日期", value=dt.datetime.today(), key="limit_trade_date")
     trade_date_str = trade_date.strftime("%Y%m%d")
     if st.button("查询涨停题材列表", key="btn_limit_cpt_list"):
         try:
@@ -193,10 +198,11 @@ def query_ths_member():
             except Exception as e:
                 st.error(f"查询失败：{e}")
 
+
 # ================== 功能5：概念题材查询 ==================
 def query_concept_data():
     st.subheader("概念题材查询")
-    trade_date = st.text_input("交易日期（格式：YYYYMMDD）", value="")
+    trade_date = st.text_input("交易日期（格式：YYYYMMDD）", value="", key="concept_trade_date")
     if st.button("查询概念题材数据", key="btn_concept"):
         try:
             df = pro.kpl_concept(
@@ -225,11 +231,12 @@ def query_concept_data():
         except Exception as e:
             st.error(f"查询失败：{e}")
 
-# ================== 功能6：题材成分股查询 ==================
+
+# ================== 功能6：题材成分股查询（概念） ==================
 def query_concept_cons():
     st.subheader("题材成分股查询")
     ts_code_input = st.text_input("题材代码", key="ths_input_concept")
-    trade_date = st.text_input("交易日期（格式：YYYYMMDD）", value="")
+    trade_date = st.text_input("交易日期（格式：YYYYMMDD）", value="", key="concept_cons_trade_date")
     if st.button("查询题材成分股数据", key="btn_concept_cons"):
         try:
             df = pro.kpl_concept_cons(
@@ -262,20 +269,96 @@ def query_concept_cons():
         except Exception as e:
             st.error(f"查询失败：{e}")
 
+# ================== 功能7：连板天数查询 ==================
+def query_limit_step():
+    st.subheader("连板天数查询")
+    trade_date = st.text_input("交易日期（格式：YYYYMMDD）", value="", key="limit_step_trade_date")
+    ts_code_input = st.text_input("股票代码", value="", key="limit_step_ts_code")
+    nums = st.text_input("连板次数（例如：2,3）", value="", key="limit_step_nums")
+    if st.button("查询连板天数", key="btn_limit_step"):
+        try:
+            df = pro.limit_step(
+                trade_date=trade_date,
+                ts_code=ts_code_input,
+                start_date="",
+                end_date="",
+                nums=nums,
+                fields=[
+                    "ts_code",
+                    "name",
+                    "trade_date",
+                    "nums"
+                ]
+            )
+            if df.empty:
+                st.info("未查询到数据")
+            else:
+                df.rename(columns={
+                    "ts_code": "股票代码",
+                    "name": "股票名称",
+                    "trade_date": "交易日期",
+                    "nums": "连板天数"
+                }, inplace=True)
+                st.dataframe(df, use_container_width=True)
+        except Exception as e:
+            st.error(f"查询失败：{e}")
 
-
+# ================== 功能8：机构调研 ==================
+def query_stk_surv():
+    st.subheader("机构调研")
+    ts_code_input = st.text_input("股票代码", value="", key="stk_surv_ts_code")
+    trade_date = st.text_input("交易日期（格式：YYYYMMDD）", value="", key="stk_surv_trade_date")
+    start_date = st.text_input("开始日期（格式：YYYYMMDD）", value="", key="stk_surv_start_date")
+    end_date = st.text_input("结束日期（格式：YYYYMMDD）", value="", key="stk_surv_end_date")
+    if st.button("查询存续公告", key="btn_stk_surv"):
+        try:
+            df = pro.stk_surv(
+                ts_code=ts_code_input,
+                trade_date=trade_date,
+                start_date=start_date,
+                end_date=end_date,
+                fields=[
+                    "ts_code",
+                    "name",
+                    "surv_date",
+                    "fund_visitors",
+                    "rece_place",
+                    "rece_org",
+                    "org_type",
+                    "comp_rece",
+                    "content"
+                ]
+            )
+            if df.empty:
+                st.info("未查询到数据")
+            else:
+                df.rename(columns={
+                    "ts_code": "股票代码",
+                    "name": "股票名称",
+                    "surv_date": "公告日期",
+                    "fund_visitors": "参会人员",
+                    "rece_place": "会场",
+                    "rece_org": "接待机构",
+                    "org_type": "机构类型",
+                    "comp_rece": "公司接待",
+                    "content": "内容"
+                }, inplace=True)
+                st.dataframe(df, use_container_width=True)
+        except Exception as e:
+            st.error(f"查询失败：{e}")
 
 # ================== 主函数 ==================
 def main():
     st.title("柚子侦探数据库 - 综合查询")
-    # 使用 st.tabs 实现上方横向选择模块
     tabs = st.tabs([
-        "游资数据查询",
-        "董秘问答查询",
-        "涨停题材列表",
-        "题材成分股查询",
-        "概念题材查询",  # 新增的模块
-        "题材成分股查询"  # 新增的模块
+        "游资数据",
+        "董秘问答",
+        "同花顺题材",
+        "同花顺成分股",
+        "开市啦题材",
+        "开市啦成分股",
+        "连板天数查询",
+        "机构调研"   # 新增的模块
     ])
 
     with tabs[0]:
@@ -287,9 +370,14 @@ def main():
     with tabs[3]:
         query_ths_member()
     with tabs[4]:
-        query_concept_data()  # 新增的模块
+        query_concept_data()
     with tabs[5]:
-        query_concept_cons()  # 新增的模块
+        query_concept_cons()
+    with tabs[6]:
+        query_limit_step()
+    with tabs[7]:
+        query_stk_surv()
+
 
 
 if __name__ == "__main__":
