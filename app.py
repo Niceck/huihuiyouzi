@@ -12,11 +12,17 @@ tushare_token = st.secrets.get("api_keys", {}).get("tushare_token", "your_defaul
 ts.set_token(tushare_token)
 pro = ts.pro_api()
 
+# ------------------ 公众号信息展示 ------------------
+def show_public_account_info():
+    st.markdown("## 关注我的公众号")
+    # 显示公众号链接，点击后可跳转到公众号主页（请替换为你的实际链接）
+    st.markdown("[点击这里关注我的公众号](https://mp.weixin.qq.com/s/ACWq9-RzaO_uFWBhz_QX5Q)")
+    # 展示二维码图片，请将路径替换为实际的二维码图片路径
+    st.image("/Users/apple/Movies/自媒体/公众号二维码.jpg", caption="公众号二维码", width=200)
 
 # ================== 功能1：游资数据查询 ==================
 def query_youzidata():
     st.subheader("游资数据查询")
-    # 输入参数（增加唯一的 key 参数）
     trade_date = st.text_input("交易日期（格式：YYYYMMDD）", value="", key="youzi_trade_date")
     ts_code = st.text_input("股票代码", value="", key="youzi_ts_code")
     hm_name = st.text_input("游资名称", value="", key="youzi_hm_name")
@@ -37,7 +43,6 @@ def query_youzidata():
         if df.empty:
             st.info("未获取到任何数据。")
         else:
-            # 转换金额为单位万（整除）
             df['buy_amount'] = df['buy_amount'] // 10000
             df['sell_amount'] = df['sell_amount'] // 10000
             df['net_amount'] = df['net_amount'] // 10000
@@ -52,10 +57,8 @@ def query_youzidata():
             }, inplace=True)
             st.dataframe(df, use_container_width=True, hide_index=True)
 
+# ------------------ 获取董秘问答数据 ------------------
 def get_qa_sz(ts_code, trade_date):
-    """
-    获取深圳的董秘问答数据，包含股票代码、股票名称、提问、回答和发布时间。
-    """
     try:
         df = pro.irm_qa_sz(
             ts_code=ts_code,
@@ -75,9 +78,6 @@ def get_qa_sz(ts_code, trade_date):
         return pd.DataFrame()
 
 def get_qa_sh(ts_code, trade_date):
-    """
-    获取上海的董秘问答数据，包含股票代码、股票名称、提问、回答和发布时间。
-    """
     try:
         df = pro.irm_qa_sh(
             ts_code=ts_code,
@@ -95,8 +95,6 @@ def get_qa_sh(ts_code, trade_date):
     except Exception as e:
         st.error(f"获取上海数据失败: {e}")
         return pd.DataFrame()
-
-
 
 # ================== 功能2：董秘问答查询 ==================
 def query_dongmi():
@@ -119,7 +117,6 @@ def query_dongmi():
             st.dataframe(df_sh, use_container_width=True)
         else:
             st.info("未获取到上海数据。")
-
 
 # ================== 功能3：涨停题材列表 ==================
 def query_limit_cpt_list():
@@ -164,7 +161,6 @@ def query_limit_cpt_list():
         except Exception as e:
             st.error(f"查询失败：{e}")
 
-
 # ================== 功能4：题材成分股查询 ==================
 def query_ths_member():
     st.subheader("题材成分股查询")
@@ -196,7 +192,6 @@ def query_ths_member():
                     st.dataframe(df, use_container_width=True)
             except Exception as e:
                 st.error(f"查询失败：{e}")
-
 
 # ================== 功能5：概念题材查询 ==================
 def query_concept_data():
@@ -230,7 +225,6 @@ def query_concept_data():
                 st.dataframe(df, use_container_width=True)
         except Exception as e:
             st.error(f"查询失败：{e}")
-
 
 # ================== 功能6：题材成分股查询（概念） ==================
 def query_concept_cons():
@@ -352,7 +346,13 @@ def query_stk_surv():
 
 # ================== 主函数 ==================
 def main():
-    st.title("柚子侦探数据库 - 综合查询")
+    # 使用两列布局，左侧放标题，右侧放公众号信息
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.title("柚子侦探数据库 - 综合查询")
+    with col2:
+        show_public_account_info()
+
     tabs = st.tabs([
         "游资数据",
         "董秘问答",
@@ -361,7 +361,7 @@ def main():
         "开市啦题材",
         "开市啦成分股",
         "连板天数查询",
-        "机构调研"   # 新增的模块
+        "机构调研"
     ])
 
     with tabs[0]:
@@ -380,8 +380,6 @@ def main():
         query_limit_step()
     with tabs[7]:
         query_stk_surv()
-
-
 
 if __name__ == "__main__":
     main()
