@@ -16,7 +16,7 @@ pro = ts.pro_api()
 def show_public_account_info():
     st.markdown("## 关注我的公众号")
     # 显示公众号链接，点击后可跳转到公众号主页（请替换为你的实际链接）
-    st.markdown("[点击这里关注我的公众号](https://mp.weixin.qq.com/s/ACWq9-RzaO_uFWBhz_QX5Q)")
+    st.markdown("[点击这里关注我的公众号](https://mp.weixin.qq.com/s/pw4UnWRILjeoptRzl165AQ")
     # 展示二维码图片，请将路径替换为实际的二维码图片路径
     st.image("公众号二维码.jpg", caption="公众号二维码", width=200)
 
