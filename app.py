@@ -16,8 +16,7 @@ pro = ts.pro_api()
 def show_public_account_info():
     st.markdown("## 关注我的公众号")
     # 显示公众号链接，点击后可跳转到公众号主页（请替换为你的实际链接）
-    st.markdown("游资题材热点涨停分析"
-                "https://mp.weixin.qq.com/s/EI5fmJhIrsaPpgbz65cACw")
+    st.markdown("每日更新游资涨停题材可视化分析表")
     # 展示二维码图片，请将路径替换为实际的二维码图片路径
     st.image("公众号二维码.jpg", caption="公众号二维码", width=200)
 
@@ -64,6 +63,7 @@ def get_qa_sz(ts_code, trade_date):
         df = pro.irm_qa_sz(
             ts_code=ts_code,
             trade_date=trade_date,
+            limit=500,
             fields="ts_code,name,q,a,pub_time"
         )
         df.rename(columns={
@@ -101,8 +101,8 @@ def get_qa_sh(ts_code, trade_date):
 def query_dongmi():
     st.subheader("董秘问答查询")
     ts_code_input = st.text_input("股票代码（可留空）", value="", key="dongmi_ts_code")
-    trade_date = st.date_input("交易日期", value=dt.datetime.today().date())
-    trade_date_str = trade_date.strftime("%Y%m%d") if trade_date else ""
+    # 使用文本输入框代替日期选择控件，用户可自行输入日期，或者留空
+    trade_date_str = st.text_input("交易日期（格式：YYYYMMDD，可选）", value="", key="dongmi_trade_date")
     if st.button("查询董秘问答", key="btn_dongmi"):
         st.write("### 深圳数据")
         df_sz = get_qa_sz(ts_code_input, trade_date_str)
@@ -118,6 +118,7 @@ def query_dongmi():
             st.dataframe(df_sh, use_container_width=True)
         else:
             st.info("未获取到上海数据。")
+
 
 # ================== 功能3：涨停题材列表 ==================
 def query_limit_cpt_list():
