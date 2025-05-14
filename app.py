@@ -7,9 +7,15 @@ import os
 st.set_page_config(page_title="Stock Analysis App", layout="wide")
 
 # ------------------ Tushare 初始化 ------------------
-# 请确保 secrets.toml 中配置了 Tushare Token，否则直接修改 "your_default_token_here"
-tushare_token = os.getenv("TUSHARE_TOKEN") or \
-                st.secrets.get("api_keys", {}).get("tushare_token", "")
+# 尝试从 Railway 的环境变量中读取
+tushare_token = os.getenv("TUSHARE_TOKEN")
+
+# 如果环境变量中没有，再尝试从本地 secrets.toml 中读取
+if not tushare_token:
+    try:
+        tushare_token = st.secrets["api_keys"]["tushare_token"]
+    except Exception:
+        tushare_token = ""
 ts.set_token(tushare_token)
 pro = ts.pro_api()
 
