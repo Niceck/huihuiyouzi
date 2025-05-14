@@ -2,13 +2,14 @@ import streamlit as st
 import tushare as ts
 import pandas as pd
 import datetime as dt
-
+import os
 # 设置页面配置（不使用背景图）
 st.set_page_config(page_title="Stock Analysis App", layout="wide")
 
 # ------------------ Tushare 初始化 ------------------
 # 请确保 secrets.toml 中配置了 Tushare Token，否则直接修改 "your_default_token_here"
-tushare_token = st.secrets.get("api_keys", {}).get("tushare_token", "your_default_token_here")
+tushare_token = os.getenv("TUSHARE_TOKEN") or \
+                st.secrets.get("api_keys", {}).get("tushare_token", "")
 ts.set_token(tushare_token)
 pro = ts.pro_api()
 
